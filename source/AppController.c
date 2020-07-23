@@ -33,16 +33,12 @@
 
 
 
-#include "BCDS_CmdProcessor.h"
-
-#include "BCDS_SDCard_Driver.h"
 #include "ff.h"
 
 
 
 #include "XDK_Sensor.h"
 
-#include "BCDS_CmdProcessor.h"
 
 #include "task.h"
 
@@ -61,7 +57,6 @@
 
 
 
-/* constant definitions MQTT / WLAN***************************************************** */
 
 
 
@@ -375,10 +370,6 @@ static void AppControllerFire(void* pvParameters)
 
 
 
-
-
-
-
     if (RETCODE_OK != retcode)
     {
         /* We raise error and still proceed to publish data periodically */
@@ -390,32 +381,15 @@ static void AppControllerFire(void* pvParameters)
 
 
 
-
-
-
-
-
-
-
-
-
     /* A function that implements a task must not exit or attempt to return to
      its caller function as there is nothing to return to. */
     while (1)
     {
 
 
-
-
-
-
-
     	current_timer=xTaskGetTickCount();
 
-
         retcode = RETCODE_OK;
-
-
 
 		if (RETCODE_OK == retcode)
 		{
@@ -426,7 +400,7 @@ static void AppControllerFire(void* pvParameters)
 
 
 
-Accelerometer_XyzData_T bma280 = {INT32_C(0), INT32_C(0), INT32_C(0)};
+        Accelerometer_XyzData_T bma280 = {INT32_C(0), INT32_C(0), INT32_C(0)};
 		     memset(&bma280, 0, sizeof(CalibratedAccel_XyzMps2Data_T));
 
 		     //current_timer=xTaskGetTickCount();
@@ -509,35 +483,6 @@ Accelerometer_XyzData_T bma280 = {INT32_C(0), INT32_C(0), INT32_C(0)};
 
 
 
-/*
-
-			sprintf(FileContent, "%ld ,%.0lf,%.0lf,%.0lf, %ld, %.0lf,%.0lf,%.0lf, %ld, %.0lf,%.0lf,%.0lf,"
-					"%ld, %.0lf, %.0lf,%.0lf,%ld, %.0lf, %.0lf,%.0lf,%ld,%ld,%ld,%ld,%ld, %ld,%ld,%ld,"
-         				 "%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,"
-      		"%ld, %ld, %ld, %lf,%ld,%ld,%0.2f,%ld,%ld,%ld\n",
-					(int) Timer_Buffer[0], (float)ACC_X_Buffer[0], (float) ACC_Y_Buffer[0], (float) ACC_Z_Buffer[0],
-																				(int) Timer_Buffer[1], (float)ACC_X_Buffer[1], (float) ACC_Y_Buffer[1], (float) ACC_Z_Buffer[1],
-																				(int) Timer_Buffer[2], (float)ACC_X_Buffer[2], (float) ACC_Y_Buffer[2], (float) ACC_Z_Buffer[2],
-																				(int) Timer_Buffer[3], (float)ACC_X_Buffer[3], (float) ACC_Y_Buffer[3], (float) ACC_Z_Buffer[3],
-																				(int) Timer_Buffer[3], (float)ACC_X_Buffer_mean, (float) ACC_Y_Buffer_mean, (float) ACC_Z_Buffer_mean,
-
-
-																				(int) Timer_Buffer[0],(long int)Gyro_X_Buffer[0], (long int) Gyro_Y_Buffer[0], (long int) Gyro_Z_Buffer[0],
-																				(int) Timer_Buffer[1], (long int)Gyro_X_Buffer[1], (long int) Gyro_Y_Buffer[1], (long int)Gyro_Z_Buffer[1],
-																				(int) Timer_Buffer[2], (long int)Gyro_X_Buffer[2], (long int) Gyro_Y_Buffer[2], (long int) Gyro_Z_Buffer[2],
-																				(int) Timer_Buffer[3], (long int)Gyro_X_Buffer[3], (long int) Gyro_Y_Buffer[3], (long int) Gyro_Z_Buffer[3],
-																				(int) Timer_Buffer[3], (long int)Gyro_X_mean, (long int) Gyro_Y_mean, (long int) Gyro_Z_mean,
-
-																				(long int) sensorValue.Mag.X, (long int) sensorValue.Mag.Y,  (long int) sensorValue.Mag.Z,
-																					acousticData,(long int) sensorValue.RH, (long int) Pressure_Buffer_mean,
-																				(sensorValue.Temp /= 1000), (long int) sensorValue.Light, (long int) Timer_absolut, outputVoltage );
-
-
-			writeDataIntoFileOnSdCard(Filename, FileContent);*/
-
-		     /*sprintf(FileContent, "%ld, %.0lf, %.0lf, %.0lf \n ",
-		    		 (int) Timer_Buffer[0], (float)ACC_X_Buffer[0], (float) ACC_Y_Buffer[0], (float) ACC_Z_Buffer[0]);*/
-
 			sprintf(FileContent, "%ld ,%.0lf,%.0lf,%.0lf, %ld, %.0lf,%.0lf,%.0lf, %ld, %.0lf,%.0lf,%.0lf,%ld, %.0lf, %.0lf,%.0lf,%ld, %.0lf, %.0lf,%.0lf,%ld,%ld,%ld,%ld,%ld, %ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld, %ld, %ld, %lf,%ld,%ld,%0.2f,%ld,%ld,%ld\n",
 								(int) Timer_Buffer[0], (float)ACC_X_Buffer[0], (float) ACC_Y_Buffer[0], (float) ACC_Z_Buffer[0],
 																							(int) Timer_Buffer[1], (float)ACC_X_Buffer[1], (float) ACC_Y_Buffer[1], (float) ACC_Z_Buffer[1],
@@ -557,22 +502,6 @@ Accelerometer_XyzData_T bma280 = {INT32_C(0), INT32_C(0), INT32_C(0)};
 																							(sensorValue.Temp /= 1000), (long int) sensorValue.Light, (long int) Timer_absolut, outputVoltage );
 
 
-		/*	sprintf(FileContent, "%ld, %.0lf,%.0lf,%.0lf, %ld, %.0lf,%.0lf,%.0lf,%ld, %.0lf, %.0lf,%.0lf,%ld, %.0lf, %.0lf,%.0lf,%ld,%ld,%ld,%ld,%ld, %ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld,%ld, %ld, %ld, %lf,%ld,%ld,%0.2f,%ld,%ld,%ld\n",
-											(int) Timer_Buffer[0], (float)ACC_X_Buffer[0], (float) ACC_Y_Buffer[0], (float) ACC_Z_Buffer[0],
-																										(int) Timer_Buffer[1], (float)ACC_X_Buffer[1], (float) ACC_Y_Buffer[1], (float) ACC_Z_Buffer[1],
-																										(int) Timer_Buffer[2], (float)ACC_X_Buffer[2], (float) ACC_Y_Buffer[2], (float) ACC_Z_Buffer[2],
-																										(int) Timer_Buffer[3], (float)ACC_X_Buffer[3], (float) ACC_Y_Buffer[3], (float) ACC_Z_Buffer[3],
-																										(int) Timer_Buffer[0],(long int)Gyro_X_Buffer[0], (long int) Gyro_Y_Buffer[0], (long int) Gyro_Z_Buffer[0],
-																										(int) Timer_Buffer[1], (long int)Gyro_X_Buffer[1], (long int) Gyro_Y_Buffer[1], (long int)Gyro_Z_Buffer[1],
-																										(int) Timer_Buffer[2], (long int)Gyro_X_Buffer[2], (long int) Gyro_Y_Buffer[2], (long int) Gyro_Z_Buffer[2],
-																										(int) Timer_Buffer[3], (long int)Gyro_X_Buffer[3], (long int) Gyro_Y_Buffer[3], (long int) Gyro_Z_Buffer[3],
-																										(int) Timer_Buffer[3], (long int)Gyro_X_mean, (long int) Gyro_Y_mean, (long int) Gyro_Z_mean,
-
-																										(long int) sensorValue.Mag.X, (long int) sensorValue.Mag.Y,  (long int) sensorValue.Mag.Z,
-																											acousticData,(long int) sensorValue.RH, (long int) Pressure_Buffer_mean,
-																										(sensorValue.Temp /= 1000), (long int) sensorValue.Light, (long int) Timer_absolut, outputVoltage );
-
-*/
 		                     writeDataIntoFileOnSdCard(Filename, FileContent);
 
 
@@ -587,18 +516,18 @@ Accelerometer_XyzData_T bma280 = {INT32_C(0), INT32_C(0), INT32_C(0)};
             Retcode_RaiseError(retcode);
         }
         DataCounter++;
-        vTaskDelay(APP_MQTT_DATA_PUBLISH_PERIODICITY);
+        vTaskDelay(SAMPLE_PERIODICITY);
     }
 }
 
 
 
-
+/*
 static void readAcousticSensor(xTimerHandle xTimer)
 {
     (void) xTimer;
 
-    //TickType_t  current_timer;
+
     uint64_t current_timer;
 
 
@@ -613,7 +542,7 @@ static void readAcousticSensor(xTimerHandle xTimer)
 
 
 
-}
+}*/
 
 /*
  *   Controler-Functions
@@ -653,20 +582,10 @@ static void AppControllerEnable(void * param1, uint32_t param2)
            }
 
 
-
            createFileOnSdCard(Filename);
-
            writeDataIntoFileOnSdCard(Filename, FileContent);
 
 
-
-
-
-
-
-
-
-           //if (RETCODE_OK == retcode)
            if ( RETCODE_OK == NoiseSensor_Enable())
               {
                   if (pdPASS != xTaskCreate(AppControllerFire, (const char * const ) "AppController", TASK_STACK_SIZE_APP_CONTROLLER, NULL, TASK_PRIO_APP_CONTROLLER, &AppControllerHandle))
@@ -700,7 +619,7 @@ static void AppControllerSetup(void * param1, uint32_t param2)
         uint32_t Delay = SAMPLING_FREQUENCY;
         uint32_t timerAutoReloadOn = UINT32_C(1);
 
-        acousticHandle = xTimerCreate((const char *) "readAcousticSensor", Delay,timerAutoReloadOn, NULL, readAcousticSensor);
+      //  acousticHandle = xTimerCreate((const char *) "readAcousticSensor", Delay,timerAutoReloadOn, NULL, readAcousticSensor);
     }
 
     InitSdCard();
@@ -709,8 +628,7 @@ static void AppControllerSetup(void * param1, uint32_t param2)
     initAccelerometer();
 
     // Init Battery Level
-    retcode = BatteryMonitor_Init	();
-
+    retcode = BatteryMonitor_Init();
 
     retcode = CmdProcessor_Enqueue(AppCmdProcessor, AppControllerEnable, NULL, UINT32_C(0));
     if (RETCODE_OK != retcode)
