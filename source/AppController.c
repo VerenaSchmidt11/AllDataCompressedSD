@@ -28,15 +28,13 @@
 #include "XDK_Utils.h"
 #include "BSP_BoardType.h"
 #include "BCDS_Assert.h"
-#include <FreeRTOS.h>
-#include <timers.h>
 
 #include "AppController.h"
 
 
 
 #include "BCDS_CmdProcessor.h"
-#include "FreeRTOS.h"
+
 #include "BCDS_SDCard_Driver.h"
 #include "ff.h"
 
