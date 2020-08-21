@@ -1,6 +1,6 @@
-C:/Users/z002wr4w/XDK-Workspace/AllDataCompressedSD/debug/objects/AppController.o: \
- C:/Users/z002wr4w/XDK-Workspace/AllDataCompressedSD/source/AppController.c \
- C:/Users/z002wr4w/XDK-Workspace/AllDataCompressedSD/source/XdkAppInfo.h \
+C:/Users/veren/OneDrive/IoT/Git/AllDataCompressedSD/debug/objects/AppController.o: \
+ C:/Users/veren/OneDrive/IoT/Git/AllDataCompressedSD/source/AppController.c \
+ C:/Users/veren/OneDrive/IoT/Git/AllDataCompressedSD/source/XdkAppInfo.h \
  ../Common/include/XdkCommonInfo.h \
  ../Platform/Essentials/include/BCDS_Retcode.h \
  ../Platform/Essentials/include/BCDS_Basics.h \
@@ -15,7 +15,7 @@ C:/Users/z002wr4w/XDK-Workspace/AllDataCompressedSD/debug/objects/AppController.
  ../Platform/Drivers/include/BCDS_SDCard_Driver.h \
  ../Common/include/Utility/XDK_Utils.h \
  ../Platform/BSP/include/BSP_BoardType.h \
- C:/Users/z002wr4w/XDK-Workspace/AllDataCompressedSD/source/AppController.h \
+ C:/Users/veren/OneDrive/IoT/Git/AllDataCompressedSD/source/AppController.h \
  ../Common/include/Sensor/XDK_Sensor.h \
  ../Common/include/Sensor/XDK_SensorHandle.h \
  ../Platform/Sensors/include/BCDS_Accelerometer.h \
@@ -39,7 +39,7 @@ C:/Users/z002wr4w/XDK-Workspace/AllDataCompressedSD/debug/objects/AppController.
  ../Common/include/Sensor/XDK_SensorHandle.h \
  ../Common/include/BatteryMonitor.h
 
-C:/Users/z002wr4w/XDK-Workspace/AllDataCompressedSD/source/XdkAppInfo.h:
+C:/Users/veren/OneDrive/IoT/Git/AllDataCompressedSD/source/XdkAppInfo.h:
 
 ../Common/include/XdkCommonInfo.h:
 
@@ -69,7 +69,7 @@ C:/Users/z002wr4w/XDK-Workspace/AllDataCompressedSD/source/XdkAppInfo.h:
 
 ../Platform/BSP/include/BSP_BoardType.h:
 
-C:/Users/z002wr4w/XDK-Workspace/AllDataCompressedSD/source/AppController.h:
+C:/Users/veren/OneDrive/IoT/Git/AllDataCompressedSD/source/AppController.h:
 
 ../Common/include/Sensor/XDK_Sensor.h:
 

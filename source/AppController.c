@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------- */
 
 /* own header files */
-#include "XdkAppInfo.h"
+#include "XdkAppInfo.h"   //This File represents the Module IDs for the Application C modules and application specific custom error codes
 #undef BCDS_MODULE_ID  /* Module ID define before including Basics package*/
 #define BCDS_MODULE_ID XDK_APP_MODULE_ID_APP_CONTROLLER
 
@@ -14,33 +14,32 @@
 
 /* additional interface header files */
 #include "BCDS_CmdProcessor.h"
-#include "FreeRTOS.h"
+#include "FreeRTOS.h"  //Taskhandling with operating system FreeRTOS
 #include "timers.h"
-#include "XDK_NoiseSensor.h"
-#include "math.h"
-#include "arm_math.h"
+#include "XDK_NoiseSensor.h"   //for handling the noise sensor on its own
+#include "arm_math.h"   //needed for datatypes e.g. UINT8_C
 
 /* additional interface header files */
-#include "XDK_Storage.h"
-#include "XDK_LED.h"
-#include "BCDS_SDCard_Driver.h"
+#include "XDK_Storage.h"  // needed for storing on SD card
+#include "XDK_LED.h"     //LED light for user interaction in case of errors
+#include "BCDS_SDCard_Driver.h"  //Initialize and usage of SDCard
 
-#include "XDK_Utils.h"
-#include "BSP_BoardType.h"
+#include "XDK_Utils.h"   // Utilities also including error return codes
+#include "BSP_BoardType.h"  //BSP support e.g. needed for SD Card 
 #include "BCDS_Assert.h"
 
-#include "AppController.h"
+#include "AppController.h"   //needed for writing on SD Card
 
 
 
-#include "ff.h"
+#include "ff.h"   //offers functions for accessing and manipulating files on the SD card
 
 
 
-#include "XDK_Sensor.h"
+#include "XDK_Sensor.h"   //for controlling all sensors at once
 
 
-#include "task.h"
+// #include "task.h"
 
 
 
@@ -49,7 +48,7 @@
 #include "XdkSensorHandle.h"
 
 // Battery Level
-#include "BatteryMonitor.h"
+#include "BatteryMonitor.h"   // for monitoring battery level
 
 
 /* constant definitions ***************************************************** */
@@ -113,19 +112,7 @@ xTimerHandle acousticHandle = NULL;
  * VARIABLES ***************************************************************** |
  * -------------------------------------------------------------------------- */
 
-const float aku340ConversionRatio = pow(10,(-38/20));
 
-const float SplRatio = pow(10,(-38/20)) * 20e-6;
-
-static arm_rfft_instance_f32 rfft_instance;
-
-static arm_cfft_radix4_instance_f32 cfft_instance;
-
-/** Complex (interleaved) output from FFT. */
-static float32_t* fftOutputComplex;
-
-/** Magnitude of complex numbers in FFT output. */
-static float32_t* fftOutputMag;
 
 #define SAMPLING_FREQUENCY UINT32_C(100) //1000 = Sek
 
@@ -180,11 +167,11 @@ static Sensor_Setup_T SensorSetup =
                                 .Accel = true,
                                 .Mag = true,
                                 .Gyro = true,
-                                .Humidity = true, //false, //true,
-                                .Temp = true, //false, //true,
-                                .Pressure = true, //false, //true,
-                                .Light = true, //false, //true,
-                                .Noise = false,
+                                .Humidity = true, 
+                                .Temp = true, 
+                                .Pressure = true, 
+                                .Light = true, 
+                                .Noise = false,   //problems when true with Version 1.1.0 - therefore noise sensor is handled extra
                         },
                 .Config =
                         {
@@ -217,54 +204,7 @@ static Sensor_Setup_T SensorSetup =
         };/**< Sensor setup parameters */
 
 
-// Function for ACC
 
-
-static void readAccelerometer(xTimerHandle xTimer)
-{
-    (void) xTimer;
-
-    Retcode_T returnValue = RETCODE_FAILURE;
-
-    /* read and print BMA280 accelerometer data */
-
-    Accelerometer_XyzData_T bma280 = {INT32_C(0), INT32_C(0), INT32_C(0)};
-    memset(&bma280, 0, sizeof(CalibratedAccel_XyzMps2Data_T));
-
-    returnValue = Accelerometer_readXyzGValue(xdkAccelerometers_BMA280_Handle,&bma280);
-
-    if (RETCODE_OK == returnValue) {
-        printf("BMA280 Acceleration Data - M/S2 %f m/s2 %f m/s2 %f m/s2\n\r",
-            (float) bma280.xAxisData, (float) bma280.yAxisData, (float) bma280.zAxisData);
-    }
-}
-
-
-static void initAccelerometer(void)
-{
-    Retcode_T returnValue = RETCODE_FAILURE;
-    Retcode_T returnBandwidthValue = RETCODE_FAILURE;
-    Retcode_T returnRangeValue = RETCODE_FAILURE;
-
-    /* initialize accelerometer */
-
-    returnValue = Accelerometer_init(xdkAccelerometers_BMA280_Handle);
-
-    if ( RETCODE_OK != returnValue) {
-        printf("BMA280 Accelerometer initialization failed\n\r");
-    }
-
-    returnBandwidthValue = Accelerometer_setBandwidth(xdkAccelerometers_BMA280_Handle,ACCELEROMETER_BMA280_BANDWIDTH_125HZ);
-
-    if (RETCODE_OK != returnBandwidthValue) {
-        printf("Configuring bandwidth failed \n\r");
-    }
-    returnRangeValue = Accelerometer_setRange(xdkAccelerometers_BMA280_Handle,ACCELEROMETER_BMA280_RANGE_2G);
-
-    if (RETCODE_OK != returnRangeValue) {
-        printf("Configuring range failed \n\r");
-    }
-}
 
 
 
@@ -411,7 +351,7 @@ static void AppControllerFire(void* pvParameters)
 
 
 
-	retcode = NoiseSensor_ReadRmsValue(&acousticData,10U);
+	retcode = NoiseSensor_ReadRmsValue(&acousticData,10U);   //Noise Sensor is handled extra (not all in one)
 
 
 
@@ -432,15 +372,15 @@ static void AppControllerFire(void* pvParameters)
 		 	 				    	         Noise_Buffer_mean=0;
 		 	 	 	 }
 
-			     	ACC_X_Buffer[AccCounter]=bma280.xAxisData;
-			     	ACC_Y_Buffer[AccCounter]=bma280.yAxisData;
-			     	ACC_Z_Buffer[AccCounter]=bma280.zAxisData;
+			     	ACC_X_Buffer[AccCounter]=sensorValue.Accel.X;
+			     	ACC_Y_Buffer[AccCounter]=sensorValue.Accel.Y;
+			     	ACC_Z_Buffer[AccCounter]=sensorValue.Accel.Z;
 			     	Timer_Buffer[AccCounter]=current_timer;
 
 
-			     	ACC_X_Buffer_mean=ACC_X_Buffer_mean+bma280.xAxisData;
-			     	ACC_Y_Buffer_mean=ACC_Y_Buffer_mean+bma280.yAxisData;
-			     	ACC_Z_Buffer_mean=ACC_Z_Buffer_mean+bma280.zAxisData;
+			     	ACC_X_Buffer_mean=ACC_X_Buffer_mean+sensorValue.Accel.X;
+			     	ACC_Y_Buffer_mean=ACC_Y_Buffer_mean+sensorValue.Accel.Y;
+			     	ACC_Z_Buffer_mean=ACC_Z_Buffer_mean+sensorValue.Accel.Z;
 
 
 			     	Gyro_X_Buffer[AccCounter]=sensorValue.Gyro.X;
@@ -522,27 +462,7 @@ static void AppControllerFire(void* pvParameters)
 
 
 
-/*
-static void readAcousticSensor(xTimerHandle xTimer)
-{
-    (void) xTimer;
 
-
-    uint64_t current_timer;
-
-
-    float acousticData, sp, spl;
-    double si;
-    char FileContent[100] ;
-    const char Filename[100];
-
-    Retcode_T retcode = RETCODE_OK;
-    Sensor_Value_T sensorValue;
-
-
-
-
-}*/
 
 /*
  *   Controler-Functions
@@ -619,13 +539,13 @@ static void AppControllerSetup(void * param1, uint32_t param2)
         uint32_t Delay = SAMPLING_FREQUENCY;
         uint32_t timerAutoReloadOn = UINT32_C(1);
 
-      //  acousticHandle = xTimerCreate((const char *) "readAcousticSensor", Delay,timerAutoReloadOn, NULL, readAcousticSensor);
+
     }
 
     InitSdCard();
 
     retcode = Sensor_Setup(&SensorSetup); // Setup other sensors
-    initAccelerometer();
+    //initAccelerometer();
 
     // Init Battery Level
     retcode = BatteryMonitor_Init();
